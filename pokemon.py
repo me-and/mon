@@ -17,6 +17,14 @@ class Pokemon(object):
         self.snapshots = snapshots
         self._name = name
 
+    def __repr__(self):
+        if self._name is None:
+            return '{}({!r})'.format(self.__class__.__name__, self.snapshots)
+        else:
+            return '{}({!r}, {!r})'.format(self.__class__.__name__,
+                                           self.snapshots,
+                                           self._name)
+
     @classmethod
     def new(cls, species, cp, hp, dust, name=None, half_levels=False):
         snapshot = StartSnapshot(species, cp, hp, dust, half_levels)

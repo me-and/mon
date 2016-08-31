@@ -36,5 +36,9 @@ class IV(namedtuple('IV', ('lvl', 'att', 'dfn', 'sta'))):
         else:
             return ((0.00891892 * (self.lvl - 30)) + 0.53538485)
 
+    @property
+    def percentage(self):
+        return (self.att + self.dfn + self.sta) / 45
+
     def increment_level(self, jumps):
         return self._replace(lvl=(self.lvl + (0.5 * jumps)))

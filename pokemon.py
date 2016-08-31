@@ -1,6 +1,7 @@
 from collections import namedtuple
 from math import sqrt
 
+import appraisal
 import iv
 
 
@@ -13,8 +14,12 @@ EvolutionSnapshot = namedtuple('EvolutionSnapshot',
 
 
 class Pokemon(object):
-    def __init__(self, snapshots, name=None):
+    def __init__(self, snapshots=None, appraisal=None, name=None):
+        if snapshots is None:
+            snapshots = []
+
         self.snapshots = snapshots
+        self.appraisal = appraisal
         self._name = name
 
     def __repr__(self):
@@ -37,6 +42,10 @@ class Pokemon(object):
     def evolve(self, species, cp, hp, dust, power_ups=0):
         snapshot = EvolutionSnapshot(species, cp, hp, dust, power_ups)
         self.snapshots.append(snapshot)
+
+    def appraise(self, overall, top_att, top_dfn, top_hp, top_iv):
+        self.appraisal = appraisal.Appraisal(overall, top_iv,
+                                             top_att, top_dfn, top_hp)
 
     @property
     def species(self):
@@ -97,5 +106,8 @@ class Pokemon(object):
             possible_ivs = {iv for iv in possible_ivs if
                             self.calc_cp(species, iv) == snapshot.cp and
                             self.calc_hp(species, iv) == snapshot.hp}
+
+        if self.appraisal is not None:
+            possible_ivs = {iv for iv in possible_ivs if self.appraisal.valid_iv(iv)}
 
         return possible_ivs

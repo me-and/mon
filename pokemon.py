@@ -111,3 +111,9 @@ class Pokemon(object):
             possible_ivs = {iv for iv in possible_ivs if self.appraisal.valid_iv(iv)}
 
         return possible_ivs
+
+    def percentage_range(self):
+        ivs = self.calc_ivs()
+        minimum = min(iv.percentage for iv in ivs)
+        maximum = max(iv.percentage for iv in ivs)
+        return (minimum, maximum)

@@ -5,7 +5,7 @@ from enum import Enum
 class OverallAppraisal(Enum):
     # Based on https://pokemongo.gamepress.gg/pokemon-appraisal
 
-    # 82.2% – 100%
+    # 82.2% – 100%  /  37–45
     # Overall, your Pokemon is a wonder! What a breathtaking Pokemon!
     wonder = 1
     # Overall, your Pokemon simply amazes me. It can accomplish anything!
@@ -14,21 +14,21 @@ class OverallAppraisal(Enum):
     # them!
     best = 1
 
-    # 66.7% – 80%
+    # 66.7% – 80%  /  30–36
     # Overall, your Pokemon has certainly caught my attention.
     attention = 2
     # Overall, your Pokemon is a strong Pokemon. You should be proud!
     # Overall, your Pokemon is really strong!
     strong = 2
 
-    # 51.1% – 64.4%
+    # 51.1% – 64.4%  /  23–29
     # Overall, your Pokemon is above average.
     average = 3
     # Overall, your Pokemon is a decent Pokemon.
     # Overall, your Pokemon is pretty decent!
     decent = 3
 
-    # 0% – 48.9%
+    # 0% – 48.9%  /  0–22
     # Overall, your Pokemon is not likely to make much headway in battle.
     likely = 4
     # Overall, your Pokemon may not be great in battle, but I still like it!
@@ -37,14 +37,14 @@ class OverallAppraisal(Enum):
     room = 4
 
 
-OVERALL_APPRAISAL_MINIMUM_PERCENTS = {OverallAppraisal.wonder: 82.2,
-                                      OverallAppraisal.attention: 66.7,
-                                      OverallAppraisal.average: 51.1,
-                                      OverallAppraisal.likely: 0.0}
-OVERALL_APPRAISAL_MAXIMUM_PERCENTS = {OverallAppraisal.wonder: 100.0,
-                                      OverallAppraisal.attention: 80.0,
-                                      OverallAppraisal.average: 64.4,
-                                      OverallAppraisal.likely: 48.9}
+OVERALL_APPRAISAL_MINIMUM_TOTALS = {OverallAppraisal.wonder: 37,
+                                    OverallAppraisal.attention: 30,
+                                    OverallAppraisal.average: 23,
+                                    OverallAppraisal.likely: 0}
+OVERALL_APPRAISAL_MAXIMUM_TOTALS = {OverallAppraisal.wonder: 45,
+                                    OverallAppraisal.attention: 36,
+                                    OverallAppraisal.average: 29,
+                                    OverallAppraisal.likely: 22}
 
 
 class TopIV(Enum):
@@ -98,9 +98,9 @@ class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
     __slots__ = ()
 
     def valid_iv(self, iv):
-        if iv.percentage < OVERALL_APPRAISAL_MINIMUM_PERCENTS[self.overall]:
+        if iv.total < OVERALL_APPRAISAL_MINIMUM_TOTALS[self.overall]:
             return False
-        if iv.percentage > OVERALL_APPRAISAL_MAXIMUM_PERCENTS[self.overall]:
+        if iv.total > OVERALL_APPRAISAL_MAXIMUM_TOTALS[self.overall]:
             return False
 
         top_iv = max(iv.att, iv.dfn, iv.sta)

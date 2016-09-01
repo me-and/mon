@@ -91,6 +91,9 @@ IV_APPRAISAL_MAXIMUM_VALUE = {TopIV.exceed: 15,
                               TopIV.norm: 7}
 class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
                                          'top_hp', 'top_iv'))):
+
+    __slots__ = ()
+
     def valid_iv(self, iv):
         if iv.percentage < OVERALL_APPRAISAL_MINIMUM_PERCENTS[self.overall]:
             return False

@@ -13,6 +13,9 @@ DUST_TO_DECIMAL_LEVELS = {k: (DUST_TO_MIN_LEVEL[k] + 0.5,
 
 
 class IV(namedtuple('IV', ('lvl', 'att', 'dfn', 'sta'))):
+
+    __slots__ = ()
+
     @classmethod
     def possible_ivs(cls, dust, half_levels):
 

@@ -1,6 +1,7 @@
 from collections import namedtuple
 from enum import Enum
 
+
 class OverallAppraisal(Enum):
     # Based on https://pokemongo.gamepress.gg/pokemon-appraisal
 
@@ -89,6 +90,8 @@ IV_APPRAISAL_MAXIMUM_VALUE = {TopIV.exceed: 15,
                               TopIV.impressed: 14,
                               TopIV.trending: 12,
                               TopIV.norm: 7}
+
+
 class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
                                          'top_hp', 'top_iv'))):
 

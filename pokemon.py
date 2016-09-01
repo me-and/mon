@@ -44,8 +44,8 @@ class Pokemon(object):
         self.snapshots.append(snapshot)
 
     def appraise(self, overall, top_att, top_dfn, top_hp, top_iv):
-        self.appraisal = appraisal.Appraisal(overall, top_iv,
-                                             top_att, top_dfn, top_hp)
+        self.appraisal = appraisal.Appraisal(overall, top_att, top_dfn, top_hp,
+                                             top_iv)
 
     @property
     def species(self):

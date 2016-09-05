@@ -23,12 +23,21 @@ class Pokemon(object):
         self._name = name
 
     def __repr__(self):
-        if self._name is None:
+        if self._name is None and self.appraisal is None:
             return '{}({!r})'.format(self.__class__.__name__, self.snapshots)
-        else:
+        elif self.appraisal is None:
+            return '{}({!r}, name={!r})'.format(self.__class__.__name__,
+                                                self.snapshots,
+                                                self._name)
+        elif self._name is None:
             return '{}({!r}, {!r})'.format(self.__class__.__name__,
                                            self.snapshots,
-                                           self._name)
+                                           self.appraisal)
+        else:
+            return '{}({!r}, {!r}, {!r})'.format(self.__class__.__name__,
+                                                 self.snapshots,
+                                                 self.appraisal,
+                                                 self._name)
 
     @classmethod
     def new(cls, species, cp, hp, dust, name=None, half_levels=False):

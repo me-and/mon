@@ -124,3 +124,10 @@ class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
             return False
 
         return True
+
+    def encode_for_json(self):
+        return {'Overall': self.overall.name,
+                'Att': self.top_att,
+                'Def': self.top_dfn,
+                'HP': self.top_hp,
+                'Stats': self.top_iv.name}

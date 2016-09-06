@@ -1,3 +1,4 @@
+import abc
 from collections import namedtuple
 from math import sqrt
 
@@ -5,12 +6,56 @@ import appraisal
 import iv
 
 
-StartSnapshot = namedtuple('StartSnapshot',
-                           ('species', 'cp', 'hp', 'dust', 'half_levels'))
-PowerUpSnapshot = namedtuple('PowerUpSnapshot',
-                             ('cp', 'hp', 'dust', 'power_ups'))
-EvolutionSnapshot = namedtuple('EvolutionSnapshot',
-                               ('species', 'cp', 'hp', 'dust', 'power_ups'))
+class Snapshot(metaclass=abc.ABCMeta):
+
+    __slots__ = ()
+
+    @abc.abstractmethod
+    def encode_for_json(self):
+        pass
+
+
+class StartSnapshot(Snapshot,
+                    namedtuple(
+                        'StartSnapshot',
+                        ('species', 'cp', 'hp', 'dust', 'half_levels'))):
+
+    __slots__ = ()
+
+    def encode_for_json(self):
+        return {'Species': self.species.name,
+                'CP': self.cp,
+                'HP': self.hp,
+                'Dust': self.dust,
+                'Half levels': self.half_levels}
+
+
+class PowerUpSnapshot(Snapshot,
+                      namedtuple('PowerUpSnapshot',
+                                 ('cp', 'hp', 'dust', 'power_ups'))):
+
+    __slots__ = ()
+
+    def encode_for_json(self):
+        return {'CP': self.cp,
+                'HP': self.hp,
+                'Dust': self.dust,
+                'Steps': self.power_ups}
+
+
+class EvolutionSnapshot(Snapshot,
+                        namedtuple(
+                            'EvolutionSnapshot',
+                            ('species', 'cp', 'hp', 'dust', 'power_ups'))):
+
+    __slots__ = ()
+
+    def encode_for_json(self):
+        return {'Species': self.species.name,
+                'CP': self.cp,
+                'HP': self.hp,
+                'Dust': self.dust,
+                'Steps': self.power_ups}
 
 
 class Pokemon(object):
@@ -127,3 +172,9 @@ class Pokemon(object):
         minimum = min(iv.percentage for iv in ivs)
         maximum = max(iv.percentage for iv in ivs)
         return (minimum, maximum)
+
+    def encode_for_json(self):
+        return {'Nickname': self.nickname,
+                'Snapshots': [s.encode_for_json() for s in self.snapshots],
+                'Appraisal': (None if self.appraisal is None
+                              else self.appraisal.encode_for_json())}

@@ -117,7 +117,8 @@ class Pokemon(object):
                             self.calc_hp(species, iv) == snapshot.hp}
 
         if self.appraisal is not None:
-            possible_ivs = {iv for iv in possible_ivs if self.appraisal.valid_iv(iv)}
+            possible_ivs = {iv for iv in possible_ivs
+                            if self.appraisal.valid_iv(iv)}
 
         return possible_ivs
 

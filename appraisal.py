@@ -131,3 +131,20 @@ class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
                 'Def': self.top_dfn,
                 'HP': self.top_hp,
                 'Stats': self.top_iv.name}
+
+    @staticmethod
+    def looks_like_json_obj(dct):
+        if dct is None:
+            return True
+        return (isinstance(dct, dict) and
+                len(dct) == 5 and
+                'Overall' in dct and 'Att' in dct and 'Def' in dct and
+                'HP' in dct and 'Stats' in dct)
+
+    @classmethod
+    def decode_from_json(cls, dct):
+        if dct is None:
+            return None
+        return cls(OverallAppraisal[dct['Overall']],
+                   dct['Att'], dct['Def'], dct['HP'],
+                   TopIV[dct['Stats']])

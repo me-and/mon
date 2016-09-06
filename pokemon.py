@@ -4,6 +4,7 @@ from math import sqrt
 
 import appraisal
 import iv
+import species
 
 
 class Snapshot(metaclass=abc.ABCMeta):
@@ -13,6 +14,36 @@ class Snapshot(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def encode_for_json(self):
         pass
+
+    @staticmethod
+    def looks_like_json_obj(dct):
+        if (not isinstance(dct, dict) or
+                'CP' not in dct or 'HP' not in dct or 'Dust' not in dct):
+            return False
+        if (len(dct) == 5 and
+                'Species' in dct and dct['Species'] in species.species and
+                'Half levels' in dct and isinstance(dct['Half levels'], bool)):
+            # StartSnapshot
+            return True
+        if len(dct) == 4 and 'Steps' in dct and isinstance(dct['Steps'], int):
+            # PowerUpSnapshot
+            return True
+        if (len(dct) == 5 and
+                'Species' in dct and dct['Species'] in species.species and
+                'Steps' in dct and isinstance(dct['Steps'], int)):
+            # EvolutionSnapshot
+            return True
+        return False
+
+    @staticmethod
+    def decode_from_json(dct):
+        if 'Half levels' in dct:
+            cls = StartSnapshot
+        elif 'Species' in dct:
+            cls = EvolutionSnapshot
+        else:
+            cls = PowerUpSnapshot
+        return cls.decode_from_json(dct)
 
 
 class StartSnapshot(Snapshot,
@@ -29,6 +60,11 @@ class StartSnapshot(Snapshot,
                 'Dust': self.dust,
                 'Half levels': self.half_levels}
 
+    @classmethod
+    def decode_from_json(cls, dct):
+        return cls(species.species[dct['Species']],
+                   dct['CP'], dct['HP'], dct['Dust'], dct['Half levels'])
+
 
 class PowerUpSnapshot(Snapshot,
                       namedtuple('PowerUpSnapshot',
@@ -41,6 +77,10 @@ class PowerUpSnapshot(Snapshot,
                 'HP': self.hp,
                 'Dust': self.dust,
                 'Steps': self.power_ups}
+
+    @classmethod
+    def decode_from_json(cls, dct):
+        return cls(dct['CP'], dct['HP'], dct['Dust'], dct['Steps'])
 
 
 class EvolutionSnapshot(Snapshot,
@@ -56,6 +96,11 @@ class EvolutionSnapshot(Snapshot,
                 'HP': self.hp,
                 'Dust': self.dust,
                 'Steps': self.power_ups}
+
+    @classmethod
+    def decode_from_json(cls, dct):
+        return cls(species.species[dct['Species']],
+                   dct['CP'], dct['HP'], dct['Dust'], dct['Steps'])
 
 
 class Pokemon(object):
@@ -178,3 +223,21 @@ class Pokemon(object):
                 'Snapshots': [s.encode_for_json() for s in self.snapshots],
                 'Appraisal': (None if self.appraisal is None
                               else self.appraisal.encode_for_json())}
+
+    @staticmethod
+    def looks_like_json_dct(dct):
+        try:
+            return (len(dct) == 3 and
+                    (dct['Nickname'] is None or
+                     isinstance(dct['Nickname'], str)) and
+                    all(Snapshot.looks_like_json_obj(s)
+                        for s in dct['Snapshots']) and
+                    appraisal.Appraisal.looks_like_json_obj(dct['Appraisal']))
+        except KeyError:
+            return False
+
+    @classmethod
+    def decode_from_json(cls, dct):
+        return cls([Snapshot.decode_from_json(s) for s in dct['Snapshots']],
+                   appraisal.Appraisal.decode_from_json(dct['Appraisal']),
+                   dct['Nickname'])

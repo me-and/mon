@@ -14,22 +14,22 @@ EvolutionSnapshot = namedtuple('EvolutionSnapshot',
 
 
 class Pokemon(object):
-    def __init__(self, snapshots=None, appraisal=None, name=None):
+    def __init__(self, snapshots=None, appraisal=None, nickname=None):
         if snapshots is None:
             snapshots = []
 
         self.snapshots = snapshots
         self.appraisal = appraisal
-        self._name = name
+        self.nickname = nickname
 
     def __repr__(self):
-        if self._name is None and self.appraisal is None:
+        if self.nickname is None and self.appraisal is None:
             return '{}({!r})'.format(self.__class__.__name__, self.snapshots)
         elif self.appraisal is None:
-            return '{}({!r}, name={!r})'.format(self.__class__.__name__,
-                                                self.snapshots,
-                                                self._name)
-        elif self._name is None:
+            return '{}({!r}, nickname={!r})'.format(self.__class__.__name__,
+                                                    self.snapshots,
+                                                    self.nickname)
+        elif self.nickname is None:
             return '{}({!r}, {!r})'.format(self.__class__.__name__,
                                            self.snapshots,
                                            self.appraisal)
@@ -37,12 +37,12 @@ class Pokemon(object):
             return '{}({!r}, {!r}, {!r})'.format(self.__class__.__name__,
                                                  self.snapshots,
                                                  self.appraisal,
-                                                 self._name)
+                                                 self.nickname)
 
     @classmethod
     def new(cls, species, cp, hp, dust, name=None, half_levels=False):
         snapshot = StartSnapshot(species, cp, hp, dust, half_levels)
-        return cls([snapshot], name=name)
+        return cls([snapshot], nickname=name)
 
     def power_up(self, cp, hp, dust, power_ups=1):
         snapshot = PowerUpSnapshot(cp, hp, dust, power_ups)
@@ -66,13 +66,13 @@ class Pokemon(object):
 
     @property
     def name(self):
-        if self._name is None:
+        if self.nickname is None:
             return self.species.name
         else:
-            return self._name
+            return self.nickname
 
     def rename(self, name):
-        self._name = name
+        self.nickname = name
 
     @staticmethod
     def calc_cp(species, iv):

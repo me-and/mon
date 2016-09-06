@@ -155,6 +155,14 @@ class Pokemon(object):
                 continue
 
     @property
+    def cp(self):
+        return self.snapshots[-1].cp
+
+    @property
+    def hp(self):
+        return self.snapshots[-1].hp
+
+    @property
     def name(self):
         if self.nickname is None:
             return self.species.name

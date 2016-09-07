@@ -92,8 +92,8 @@ IV_APPRAISAL_MAXIMUM_VALUE = {TopIV.exceed: 15,
                               TopIV.norm: 7}
 
 
-class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
-                                         'top_hp', 'top_iv'))):
+class Appraisal(namedtuple('Appraisal', ('overall', 'top_hp', 'top_att',
+                                         'top_dfn', 'top_iv'))):
 
     __slots__ = ()
 
@@ -146,5 +146,5 @@ class Appraisal(namedtuple('Appraisal', ('overall', 'top_att', 'top_dfn',
         if dct is None:
             return None
         return cls(OverallAppraisal[dct['Overall']],
-                   dct['Att'], dct['Def'], dct['HP'],
+                   dct['HP'], dct['Att'], dct['Def'],
                    TopIV[dct['Stats']])

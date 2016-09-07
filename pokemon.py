@@ -142,8 +142,8 @@ class Pokemon(object):
         snapshot = EvolutionSnapshot(species, cp, hp, dust, power_ups)
         self.snapshots.append(snapshot)
 
-    def appraise(self, overall, top_att, top_dfn, top_hp, top_iv):
-        self.appraisal = appraisal.Appraisal(overall, top_att, top_dfn, top_hp,
+    def appraise(self, overall, top_hp, top_att, top_dfn, top_iv):
+        self.appraisal = appraisal.Appraisal(overall, top_hp, top_att, top_dfn,
                                              top_iv)
 
     @property

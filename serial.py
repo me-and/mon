@@ -1,4 +1,5 @@
 import json
+from functools import partial
 
 import pokemon
 
@@ -15,3 +16,9 @@ def mon_hook(dct):
         return pokemon.Pokemon.decode_from_json(dct)
     else:
         return dct
+
+
+dump = partial(json.dump, cls=MonEncoder, indent='\t')
+dumps = partial(json.dumps, cls=MonEncoder, indent='\t')
+load = partial(json.load, object_hook=mon_hook)
+loads = partial(json.loads, object_hook=mon_hook)
